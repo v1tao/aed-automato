@@ -30,12 +30,13 @@ int check_surrounding_empty(int pos_i, int pos_j, int m, int n);
 int check_surrounding_forest(int pos_i, int pos_j, int m, int n);
 int check_surrounding_fire(int pos_i, int pos_j, int m, int n);
 int check_surrounding_water(int pos_i, int pos_j, int m, int n);
-
+//utilizacao das engines para criar numero pseudo aleatorios
+//OBS: nao compreendo muito bem como funciona!
 typedef std::mt19937 rng_type;
 std::uniform_int_distribution<rng_type::result_type> udist(0, 7);
 
 rng_type rng;
-
+//funcao responsavel por gerar um numero pseudo aleatorio 
 int rand_generator_incendio()
 {
  	using namespace std;	
@@ -120,6 +121,7 @@ void rand_mat_incendio(int m, int n){
 	}	
 } 
 
+//funcao responsavel por preencher manualmente a matriz
 void manual_mat_incendio(int m, int n){
 	std::cout << "|";	
 	for(int i = 0; i < m; i++){
@@ -131,6 +133,7 @@ void manual_mat_incendio(int m, int n){
 		std::cout << "\b|";		
 	}
 }
+//funcao responsavel por copiar a matriz temporaria e armazena-la na funcao principal 
 void copy_mat_incendio(int m, int n){
 	for(int i = 0; i < m; i++){
 		for(int j = 0; j < n; j++){
@@ -139,16 +142,16 @@ void copy_mat_incendio(int m, int n){
 		}
 	}
 }
-
+//
 void copy_mat_incendio_inverse(int m, int n){
 	for(int i = 0; i < m; i++){
 		for(int j = 0; j < n; j++){
-			mat_incendio_temp[i][j].idade = mat_incendio[i][j].idade;
+			mat_incendio[i][j].idade = mat_incendio_temp[i][j].idade;
 			mat_incendio[i][j].valor = mat_incendio_temp[i][j].valor;
 		}
 	}
 }
-
+//funcao responsavel por gerar um clima de maneira aleatoria
 int clima_rand(){
 	int clima_atual = 0;	
 
@@ -170,7 +173,7 @@ int clima_rand(){
     return clima_atual;
 }
 
-
+//funcao responsavel por imprimir a matriz principal na tela do usuario
 void print_mat_incendio(int m, int n){
 	std::cout << "\n";	
 	for(int i = 0; i < m; i++){
@@ -189,7 +192,11 @@ void print_mat_incendio(int m, int n){
 	}
 	std::cout << "\n";
 }	
-
+/*
+	O segmento seguinte eh responsavel por checar os arredores da celula por 
+	celulas especificas (VAZIO, VEGETACAO, FOGO E AGUA), possivelmente otimizado
+	entretanto mante-los independentes pode ser melhor
+*/
 int check_surrounding_fire(int pos_i, int pos_j, int m, int n){
 	int count_fire = 0;
 	if(pos_i == 0 && pos_j == 0){
@@ -392,7 +399,11 @@ int check_surrounding_forest(int pos_i, int pos_j, int m, int n){
 	}
 	return count_forest;
 }
-
+/*
+	funcao responsavel trocar o estado de cada matriz de acordo com cada 
+	celular nos arredores.
+	OBS: Nao so os arredores mais o clima tambem influencia no estado das celulas.
+*/
 void state_change(int m, int n){
 	int clima = clima_rand();	
 	
@@ -515,7 +526,10 @@ void state_change(int m, int n){
 	else
 		std::cout << "\x1B[37mNORMAL\033[0m" << std::endl;
 }
+//funcao responsavel por conectar as funcoes necessarias e gerar o menu durante a execucao do jogo
 void incendio_loop(int m, int n){
+	//loop para o menu durante a execucao
+	//OBS: facilmente otimizado, quando eu descobrir uma maneira de nao comprometer o funcionamento	
 	for(;;){	
 		int incendio_loop_menu_option;			
 	
@@ -546,7 +560,7 @@ void incendio_loop(int m, int n){
 	}
 }
 
-
+//funcao responsavel por salvar a matriz em um arquivo
 void save_matrix_file_incendio(int m, int n){
 	FILE *arquivo;
     arquivo = fopen ("matrix_incendio.txt", "w");
@@ -560,7 +574,7 @@ void save_matrix_file_incendio(int m, int n){
     }
     fclose(arquivo);
 }
-
+//funcao responsavel por carregar a matriz previamente salva na maquina do usuario
 void load_matrix_file_incendio(int *m, int *n){
 	int temp_m = *m;
 	int temp_n = *n;	
@@ -585,6 +599,7 @@ void load_matrix_file_incendio(int *m, int *n){
 	*m = temp_m;
 	*n = temp_n;
 }
+//funcao responsavel pelo menu principal da simulacao de incendio
 void menu_incendio(){
 	int m = 0;	
 	int n = 0;  
