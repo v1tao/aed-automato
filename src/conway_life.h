@@ -1,10 +1,12 @@
 #include <random>
+//tamanho maximo para matriz
 #define M 50
 #define N 50
-
+//matriz globais usadas 
 int mat[M][N];
 int temp_mat[M][N];
 
+//funcao que salva a matriz em um arquivo
 void save_matrix_file(int m, int n){
 	FILE *arquivo;
     arquivo = fopen ("matrix.txt", "w");
@@ -18,7 +20,7 @@ void save_matrix_file(int m, int n){
     }
     fclose(arquivo);
 }
-
+//funcao para carregar a matriz previamente salva na maquina
 void load_matrix_file(int *m, int *n){
 	int temp_m = *m;
 	int temp_n = *n;	
@@ -43,7 +45,7 @@ void load_matrix_file(int *m, int *n){
 	*m = temp_m;
 	*n = temp_n;
 }
-
+//funcao responsavel por mostrar a matriz principal
 void print_mat(int m, int n){
 	std::cout << "\n";	
 	for(int i = 0; i < m; i++){
@@ -58,7 +60,7 @@ void print_mat(int m, int n){
 	}
 	std::cout << "\n";
 }
-
+//funcao responsavel por preencher a matriz de forma pseudo aleatoria
 void rand_mat(int m, int n){
 	std::random_device dev;
     std::mt19937 rng(dev());
@@ -69,6 +71,8 @@ void rand_mat(int m, int n){
 			mat[i][j] = dist1(rng);
 	}
 }
+
+//funcao responsavel por preencher a matrix de forma manual
 void manual_mat(int m, int n){
 	std::cout << "|";	
 	for(int i = 0; i < m; i++){
@@ -79,21 +83,24 @@ void manual_mat(int m, int n){
 		std::cout << "\b|";	
 	}
 }
-
+//matriz responsavel para copiar a matriz temporaria e armazena-la na principal
 void copy_matrix(int m, int n){
 	for(int i = 0; i < m; i++){
 		for(int j = 0; j < n; j++)
 			temp_mat[i][j] = mat[i][j];
 	}
 }
-
+//funcao responsavel por copiar a matriz principal e armazena-la na temporaria
 void copy_matrix_inverse(int m, int n){
 	for(int i = 0; i < m; i++){
 		for(int j = 0; j < n; j++)
 			mat[i][j] = temp_mat[i][j];
 	}
 }
-
+/*
+funcao responsavel por checar os possiveis arredores de cada celula em posicoes especificas
+tambem responsavel por trocar a o estado da celula de acordo com os arredores
+*/
 void check_surrounding_elements(int pos_i, int pos_j, int m, int n){
 	int count_live = 0;
 	if(pos_i == 0 && pos_j == 0){
@@ -151,10 +158,15 @@ void check_surrounding_elements(int pos_i, int pos_j, int m, int n){
 		temp_mat[pos_i][pos_j] = 1;
 
 }
-
+//funcao responsavel pelo menu, e contar o numero de mortos e vivos em volta da celula selecionada mat[i][j]
 void life_loop(int m, int n){
 	int lives = 0;	
 	int dead = 0;
+	
+	/*
+	loop inicialmente criado com intuito de parar o funcionamento do conway life	
+	caso a matriz fique morta(completa de 0) ou entao 100% viva ( completa de 1)	
+	*/
 	for(int i = 0; i < m; i++){
 		for(int j = 0; j < n; j++){
 			if(mat[i][j] == 0)
@@ -163,7 +175,11 @@ void life_loop(int m, int n){
 				lives++;
 		}
 	}
-	
+
+	/*
+	loop responsavel por controlar o menu	
+	durante o processamento da matriz	
+	*/
 	int life_loop_menu_option; 
 	while(dead != 0 || dead != (m * n)){
 		system("clear");	
@@ -192,7 +208,7 @@ void life_loop(int m, int n){
 		estetica1();	
 	}
 }
-
+//funcao responsavel pelo menu principal do jogo da vida (conway life)
 void menu_conway_life(){
 	int m = 0;	
 	int n = 0;  
